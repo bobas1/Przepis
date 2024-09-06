@@ -18,7 +18,7 @@ const Banner = () => {
         <StyledAppBar position="static">
             <CenteredToolbar>
                 <Typography variant="h6">
-                    Find recepies, that will match your preferences:
+                    Znajdź przepisy, które Cię interesują:
                 </Typography>
             </CenteredToolbar>
         </StyledAppBar>
