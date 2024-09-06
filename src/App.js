@@ -6,6 +6,9 @@ import SearchBar from './components/SearchBar';
 import Banner from './components/Banner';
 import { RecepieSearchClient } from './api/RecepieSearchClient';
 
+
+
+
 const StyledGrid = styled(Grid)`
     && {
         background-color: lightgray;
@@ -21,44 +24,52 @@ const StyledGrid = styled(Grid)`
     }
 `;
 
-const App = () => {
-    const [recipes, setRecipes] = useState([]);
-    const [filteredRecipes, setFilteredRecipes] = useState(recipes)
-    const [searchValue, setSearchValue] = useState("")
-    const [loading, setLoading] = useState(true);
+
+function App() {
+    const [recipes, setRecipes] = useState([]); // Zmienna do przechowywania przepisów
+    const [filteredRecipes, setFilteredRecipes] = useState([]); // Przechowywanie przefiltrowanych przepisów
+    const [searchValue, setSearchValue] = useState(''); // Wartość wyszukiwana
+    const [loading, setLoading] = useState(true); // Stan ładowania
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const client = new RecepieSearchClient();
 
+    // Filtrowanie przepisów na podstawie wyszukiwanego hasła
     useEffect(() => {
         if (!searchValue) {
-            setFilteredRecipes(recipes)
+            setFilteredRecipes(recipes); // Jeśli brak wyszukiwania, pokaż wszystkie przepisy
         } else {
-            setFilteredRecipes(recipes.filter((recipe) => recipe.label.toUpperCase().includes(searchValue.toUpperCase()) && recipe))
+            const filtered = recipes.filter((recipe) =>
+                recipe.label.toUpperCase().includes(searchValue.toUpperCase())
+            );
+            setFilteredRecipes(filtered);
         }
     }, [searchValue, recipes]);
 
+    // Pobieranie przepisów przy montowaniu komponentu
     useEffect(() => {
         const fetchInitialRecipes = async () => {
             try {
                 const initialRecipes = await client.getRecipes();
-                setRecipes(initialRecipes);
+                setRecipes(initialRecipes); // Zapisanie wszystkich przepisów
+                setFilteredRecipes(initialRecipes); // Pokaż początkowo wszystkie przepisy
             } catch (error) {
                 console.error('Error fetching initial recipes:', error);
             } finally {
-                setLoading(false);
+                setLoading(false); // Ustawienie zakończenia ładowania
             }
         };
         fetchInitialRecipes();
-    }, []);
+    }, [client]);
 
     return (
         <>
             <Banner />
-            <SearchBar onSearch={setSearchValue}/>
+            <SearchBar setSearchValue={setSearchValue} /> {/* Przekazanie setSearchValue */}
             <StyledGrid container spacing={3}>
-                {!loading &&
-                    filteredRecipes.map(recipe => (
+                {!loading && // Wyświetlanie wyników, gdy ładowanie zakończone
+                    filteredRecipes.map((recipe) => (
                         <Grid item key={recipe.uri} xs={12} sm={6} md={4} lg={3}>
-                            <MediaCard recipe={recipe} />
+                            <MediaCard recipe={recipe} /> {/* Wyświetlanie karty z przepisem */}
                         </Grid>
                     ))}
             </StyledGrid>
