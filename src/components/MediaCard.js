@@ -26,7 +26,7 @@ function MediaCard({recipe}) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" href={recipe.url}>Learn More</Button>
+                <Button size="small" href={recipe.url}>Więcej</Button>
             </CardActions>
         </Card>
     );
