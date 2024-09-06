@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState } from 'react';
 import { TextField, InputAdornment, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled } from '@mui/material/styles';
@@ -8,26 +8,43 @@ const FullWidthTextField = styled(TextField)({
     margin: '10px 0', // Dodanie marginesu dla lepszego wyglądu
 });
 
-const SearchBar = () => {
-    const [searchTerm, setSearchTerm] = useState('');
+//interface SearchBarProps {
+//    setRecipes: (recipes: any[]) => void; // Typ funkcji do przekazywania przepisów
+//}
 
-    // Funkcja, która jest wywoływana po kliknięciu
-    const handleClick = async () => {
+//export const SearchBar: React.FC<SearchBarProps> = ({ setRecipes }) => {
+//    const [searchTerm, setSearchTerm] = useState(''); // Stan dla wyszukiwanej frazy
+
+export const SearchBar = ({ setRecipes }) => {
+    const [query, setQuery] = useState("chicken"); // Stan dla wyszukiwanej frazy
+
+    // Funkcja do pobierania przepisów
+    async function fetchRecipes() {
         try {
-            const response = await fetch(`https://api.edamam.com/api/recipes/v2?q=${searchTerm || 'chicken'}&type=public&app_id=109ff6bb&app_key=b5f751458ae6e9fee62c2aec731f36aa`);
+            const response = await fetch(
+                `https://api.edamam.com/api/recipes/v2?q=${query}&type=public&app_id=109ff6bb&app_key=b5f751458ae6e9fee62c2aec731f36aa`
+            );
             const data = await response.json();
-            console.log(data); // Tutaj możesz obsłużyć odpowiedź API np. zapisać ją w stanie
+            setRecipes(data.hits); // Zapisanie przepisów w stanie komponentu nadrzędnego
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error('Error fetching data:', error);
         }
+    }
+
+  
+
+    // Funkcja, która jest wywoływana po kliknięciu przycisku wyszukiwania
+    const handleClick = async () => {
+        await fetchRecipes(); // Wywołanie funkcji pobierającej przepisy
     };
 
     return (
         <FullWidthTextField
+            label="Wyszukaj"
             variant="outlined"
             placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)} // Aktualizacja frazy wyszukiwania
             InputProps={{
                 endAdornment: (
                     <InputAdornment position="end">
