@@ -41,6 +41,11 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.57.0",
     "eslint-config-teacode": "^2.1.0"
-  }
+  },
+  "description": "This directory is a brief example of a [Create React App](https://github.com/facebook/create-react-app) site that can be deployed to Vercel with zero configuration.",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
